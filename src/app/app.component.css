@@ -1,0 +1,12 @@
+.container {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+
+body {
+  background: #403f4d;
+
+}
