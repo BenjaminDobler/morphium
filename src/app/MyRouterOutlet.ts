@@ -6,10 +6,11 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {Attribute, ChangeDetectorRef, ComponentFactoryResolver, ComponentRef, Directive, EventEmitter, Injector, OnDestroy, OnInit, Output, ViewContainerRef} from '@angular/core';
+import { Attribute, ChangeDetectorRef, ComponentFactoryResolver, ComponentRef, Directive, EventEmitter, Injector, OnDestroy, OnInit, Output, ViewContainerRef } from "@angular/core";
 
-import {ChildrenOutletContexts, RouterOutlet} from '@angular/router';
-import {ActivatedRoute} from '@angular/router';
+import { ChildrenOutletContexts, RouterOutlet } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
+import { SharedElementTransitionManager } from "./transition/sharedelementtransitionmanager";
 
 /**
  * @whatItDoes Acts as a placeholder that Angular dynamically fills based on the current router
@@ -35,27 +36,31 @@ import {ActivatedRoute} from '@angular/router';
  *
  * @stable
  */
-@Directive({selector: 'benzomat', exportAs: 'outlet'})
+@Directive({ selector: "benzomat", exportAs: "outlet" })
 export class MyRouterOutlet implements OnDestroy, OnInit {
-  private activated: ComponentRef<any>|null = null;
-  private _activatedRoute: ActivatedRoute|null = null;
+  private activated: ComponentRef<any> | null = null;
+  private _activatedRoute: ActivatedRoute | null = null;
   private name: string;
 
-  @Output('activate') activateEvents = new EventEmitter<any>();
-  @Output('deactivate') deactivateEvents = new EventEmitter<any>();
+  private sharedTransitionManager: SharedElementTransitionManager;
 
-  @Output('activate2') activateEvents2 = new EventEmitter<any>();
+  @Output("activate") activateEvents = new EventEmitter<any>();
+  @Output("deactivate") deactivateEvents = new EventEmitter<any>();
 
-  constructor(
-    private parentContexts: ChildrenOutletContexts, private location: ViewContainerRef,
-    private resolver: ComponentFactoryResolver, @Attribute('name') name: string,
-    private changeDetector: ChangeDetectorRef) {
-    this.name = name || 'primary';
-    let t:any = this;
+  @Output("activate2") activateEvents2 = new EventEmitter<any>();
+
+  constructor(private parentContexts: ChildrenOutletContexts, private location: ViewContainerRef, private resolver: ComponentFactoryResolver, @Attribute("name") name: string, private changeDetector: ChangeDetectorRef) {
+    this.name = name || "primary";
+    let t: any = this;
+
+    this.sharedTransitionManager = new SharedElementTransitionManager(this, true);
+
     parentContexts.onChildOutletCreated(this.name, t);
   }
 
-  ngOnDestroy(): void { this.parentContexts.onChildOutletDestroyed(this.name); }
+  ngOnDestroy(): void {
+    this.parentContexts.onChildOutletDestroyed(this.name);
+  }
 
   ngOnInit(): void {
     if (!this.activated) {
@@ -74,15 +79,17 @@ export class MyRouterOutlet implements OnDestroy, OnInit {
     }
   }
 
-  get isActivated(): boolean { return !!this.activated; }
+  get isActivated(): boolean {
+    return !!this.activated;
+  }
 
   get component(): Object {
-    if (!this.activated) throw new Error('Outlet is not activated');
+    if (!this.activated) throw new Error("Outlet is not activated");
     return this.activated.instance;
   }
 
   get activatedRoute(): ActivatedRoute {
-    if (!this.activated) throw new Error('Outlet is not activated');
+    if (!this.activated) throw new Error("Outlet is not activated");
     return this._activatedRoute as ActivatedRoute;
   }
 
@@ -97,7 +104,7 @@ export class MyRouterOutlet implements OnDestroy, OnInit {
    * Called when the `RouteReuseStrategy` instructs to detach the subtree
    */
   detach(): ComponentRef<any> {
-    if (!this.activated) throw new Error('Outlet is not activated');
+    if (!this.activated) throw new Error("Outlet is not activated");
     this.location.detach();
     const cmp = this.activated;
     this.activated = null;
@@ -126,35 +133,30 @@ export class MyRouterOutlet implements OnDestroy, OnInit {
 
   currentComponent: any;
 
-  activateWith(activatedRoute: any, resolver: ComponentFactoryResolver|null) {
+  activateWith(activatedRoute: any, resolver: ComponentFactoryResolver | null) {
     if (this.isActivated) {
-      throw new Error('Cannot activate an already activated outlet');
+      throw new Error("Cannot activate an already activated outlet");
     }
     this._activatedRoute = activatedRoute;
     const snapshot = activatedRoute._futureSnapshot;
-    const component = <any>snapshot.routeConfig !.component;
+    const component = <any>snapshot.routeConfig!.component;
     resolver = resolver || this.resolver;
     const factory = resolver.resolveComponentFactory(component);
     const childContexts = this.parentContexts.getOrCreateContext(this.name).children;
     const injector = new OutletInjector(activatedRoute, childContexts, this.location.injector);
-    console.log("Old Activated ", this.currentComponent);
 
     this.activated = this.location.createComponent(factory, this.location.length, injector);
-    console.log("Activated ", this.activated);
     // Calling `markForCheck` to make sure we will run the change detection when the
     // `RouterOutlet` is inside a `ChangeDetectionStrategy.OnPush` component.
     this.changeDetector.markForCheck();
-    this.activateEvents2.emit({new: this.activated, old: this.currentComponent});
+    this.activateEvents2.emit({ new: this.activated, old: this.currentComponent });
     this.activateEvents.emit(this.activated.instance);
     this.currentComponent = this.activated;
-
   }
 }
 
 class OutletInjector implements Injector {
-  constructor(
-    private route: ActivatedRoute, private childContexts: ChildrenOutletContexts,
-    private parent: Injector) {}
+  constructor(private route: ActivatedRoute, private childContexts: ChildrenOutletContexts, private parent: Injector) {}
 
   get(token: any, notFoundValue?: any): any {
     if (token === ActivatedRoute) {

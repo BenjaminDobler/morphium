@@ -1,11 +1,11 @@
-import { Component, NgZone, Renderer2, ViewChild } from '@angular/core';
-import { group, transition, trigger, query, style, animate, AnimationBuilder } from '@angular/animations';
-import { SharedElementTransitionManager } from './transition/sharedelementtransitionmanager';
+import { Component, NgZone, Renderer2, ViewChild } from "@angular/core";
+import { group, transition, trigger, query, style, animate, AnimationBuilder } from "@angular/animations";
+import { SharedElementTransitionManager } from "./transition/sharedelementtransitionmanager";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"]
   /*
   animations: [
     trigger('childRouteAnimation', [
@@ -25,46 +25,35 @@ import { SharedElementTransitionManager } from './transition/sharedelementtransi
   */
 })
 export class AppComponent {
-  title = 'app';
+  title = "app";
 
-  @ViewChild('routerOutlet')
+  @ViewChild("routerOutlet")
   public outlet: any;
 
   private sharedTransitionManager: SharedElementTransitionManager;
 
   player: any;
 
-
-  constructor(private an: Renderer2, private zone:NgZone) {
-
-  }
+  constructor(private an: Renderer2, private zone: NgZone) {}
   ngAfterViewInit() {
-    this.zone.runOutsideAngular(()=>{
+    /*
+    this.zone.runOutsideAngular(() => {
       this.sharedTransitionManager = new SharedElementTransitionManager(this.outlet, true);
     });
+    */
   }
 
-  animationDone(event: AnimationEvent) {
-
-  }
-
-
-
+  animationDone(event: AnimationEvent) {}
 
   animationStarted(event: AnimationEvent) {
-
     let a: any = this.an;
     if (a.delegate.engine.players.length > 0) {
       this.player = a.delegate.engine.players[0]._player;
       //this.player.pause();
     }
-
   }
 
-  onActivated(evt) {
-
-  }
-
+  onActivated(evt) {}
 
   play() {
     this.sharedTransitionManager.play();
@@ -74,16 +63,15 @@ export class AppComponent {
     this.sharedTransitionManager.pause();
   }
 
-
   seek(val) {
     console.log("Seek ", val);
     this.sharedTransitionManager.seek(val);
   }
 
-
+  /*
   prepRouteState(outlet: any) {
     //console.log('outlet.activatedRouteData', outlet.activatedRoute);
-    return outlet.activatedRouteData['animation'] || 'firstPage';
+    return outlet.activatedRouteData["animation"] || "firstPage";
   }
-
+  */
 }
