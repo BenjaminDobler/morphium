@@ -17,6 +17,7 @@ export class SharedElementTransitionManager {
         this.newComponent = activatedElement;
         if (this.newComponent && this.oldComponent) {
           this.animationStarted();
+          console.log(this.newComponent);
         }
         /*
         if (this.newComponent && this.oldComponent && !waitForRouterAnimations) {

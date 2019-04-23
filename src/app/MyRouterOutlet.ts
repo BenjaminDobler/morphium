@@ -36,7 +36,7 @@ import { SharedElementTransitionManager } from "./transition/sharedelementtransi
  *
  * @stable
  */
-@Directive({ selector: "benzomat", exportAs: "outlet" })
+@Directive({ selector: "morph-router", exportAs: "outlet" })
 export class MyRouterOutlet implements OnDestroy, OnInit {
   private activated: ComponentRef<any> | null = null;
   private _activatedRoute: ActivatedRoute | null = null;

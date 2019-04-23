@@ -27,7 +27,7 @@ export class SharedElementTransition {
     //document.querySelector("body").appendChild(toContainer);
 
     this.fromClone = from.cloneNode(true);
-    this.toClone = to.cloneNode(false);
+    this.toClone = to.cloneNode(true);
 
     this.fromClone.setAttribute("style", window.getComputedStyle(from).cssText);
     this.toClone.setAttribute("style", window.getComputedStyle(to).cssText);

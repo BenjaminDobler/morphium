@@ -1,16 +1,13 @@
-
 <nav>
   <a routerLink="/state1" routerLinkActive="active">Page 1</a>
   <a routerLink="/state2" routerLinkActive="active">Page 2</a>
 </nav>
 
 <div class="container">
-  <benzomat #routerOutlet="outlet" (activate2)="onActivated($event)" ></benzomat>
+  <morph-router #routerOutlet="outlet"></morph-router>
 </div>
-
-
 
 <button (click)="play()">Play</button>
 <button (click)="pause()">Pause</button>
 
-<input type="range" min="0" value="0" max="100" (input)="seek($event.target.value)">
+<input type="range" min="0" value="0" max="100" (input)="seek($event.target.value)" />
