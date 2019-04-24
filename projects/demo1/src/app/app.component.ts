@@ -1,6 +1,5 @@
 import { Component, NgZone, Renderer2, ViewChild } from "@angular/core";
 import { group, transition, trigger, query, style, animate, AnimationBuilder } from "@angular/animations";
-import { SharedElementTransitionManager } from "./transition/sharedelementtransitionmanager";
 
 @Component({
   selector: "app-root",
@@ -30,8 +29,6 @@ export class AppComponent {
   @ViewChild("routerOutlet")
   public outlet: any;
 
-  private sharedTransitionManager: SharedElementTransitionManager;
-
   player: any;
 
   constructor(private an: Renderer2, private zone: NgZone) {}
@@ -56,16 +53,16 @@ export class AppComponent {
   onActivated(evt) {}
 
   play() {
-    this.sharedTransitionManager.play();
+    // this.sharedTransitionManager.play();
   }
 
   pause() {
-    this.sharedTransitionManager.pause();
+    // this.sharedTransitionManager.pause();
   }
 
   seek(val) {
     console.log("Seek ", val);
-    this.sharedTransitionManager.seek(val);
+    // this.sharedTransitionManager.seek(val);
   }
 
   /*

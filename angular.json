@@ -3,30 +3,34 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ng-morph": {
-      "root": "",
-      "sourceRoot": "src",
+    "demo1": {
+      "root": "projects/demo1/",
+      "sourceRoot": "projects/demo1/src",
       "projectType": "application",
+      "prefix": "app",
+      "schematics": {},
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "tsConfig": "src/tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
-            "assets": [
-              "src/assets",
-              "src/favicon.ico"
-            ],
-            "styles": [
-              "src/styles.css"
-            ],
-            "scripts": []
+            "outputPath": "dist/demo1",
+            "index": "projects/demo1/src/index.html",
+            "main": "projects/demo1/src/main.ts",
+            "polyfills": "projects/demo1/src/polyfills.ts",
+            "tsConfig": "projects/demo1/tsconfig.app.json",
+            "assets": ["projects/demo1/src/favicon.ico", "projects/demo1/src/assets"],
+            "styles": ["projects/demo1/src/styles.css"],
+            "scripts": [],
+            "es5BrowserSupport": true
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/demo1/src/environments/environment.ts",
+                  "with": "projects/demo1/src/environments/environment.prod.ts"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -36,10 +40,11 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "fileReplacements": [
+              "budgets": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
                 }
               ]
             }
@@ -48,78 +53,99 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ng-morph:build"
+            "browserTarget": "demo1:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ng-morph:build:production"
+              "browserTarget": "demo1:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ng-morph:build"
+            "browserTarget": "demo1:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "karmaConfig": "./karma.conf.js",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
+            "main": "projects/demo1/src/test.ts",
+            "polyfills": "projects/demo1/src/polyfills.ts",
+            "tsConfig": "projects/demo1/tsconfig.spec.json",
+            "karmaConfig": "projects/demo1/karma.conf.js",
+            "styles": ["projects/demo1/src/styles.css"],
             "scripts": [],
-            "styles": [
-              "src/styles.css"
-            ],
-            "assets": [
-              "src/assets",
-              "src/favicon.ico"
-            ]
+            "assets": ["projects/demo1/src/favicon.ico", "projects/demo1/src/assets"]
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["projects/demo1/tsconfig.app.json", "projects/demo1/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
     },
-    "ng-morph-e2e": {
-      "root": "e2e",
-      "sourceRoot": "e2e",
+    "demo1-e2e": {
+      "root": "projects/demo1-e2e/",
       "projectType": "application",
+      "prefix": "",
       "architect": {
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "ng-morph:serve"
+            "protractorConfig": "projects/demo1-e2e/protractor.conf.js",
+            "devServerTarget": "demo1:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "demo1:serve:production"
+            }
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": "projects/demo1-e2e/tsconfig.e2e.json",
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ng-morph": {
+      "root": "projects/ng-morph",
+      "sourceRoot": "projects/ng-morph/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ng-morph/tsconfig.lib.json",
+            "project": "projects/ng-morph/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ng-morph/src/test.ts",
+            "tsConfig": "projects/ng-morph/tsconfig.spec.json",
+            "karmaConfig": "projects/ng-morph/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["projects/ng-morph/tsconfig.lib.json", "projects/ng-morph/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
     }
   },
-  "defaultProject": "ng-morph",
+  "defaultProject": "demo1",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

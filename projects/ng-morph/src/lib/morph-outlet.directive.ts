@@ -10,7 +10,7 @@ import { Attribute, ChangeDetectorRef, ComponentFactoryResolver, ComponentRef, D
 
 import { ChildrenOutletContexts, RouterOutlet } from "@angular/router";
 import { ActivatedRoute } from "@angular/router";
-import { SharedElementTransitionManager } from "./transition/sharedelementtransitionmanager";
+import { SharedElementTransitionManager } from "./sharedelementtransitionmanager";
 
 /**
  * @whatItDoes Acts as a placeholder that Angular dynamically fills based on the current router
@@ -36,8 +36,8 @@ import { SharedElementTransitionManager } from "./transition/sharedelementtransi
  *
  * @stable
  */
-@Directive({ selector: "morph-router", exportAs: "outlet" })
-export class MyRouterOutlet implements OnDestroy, OnInit {
+@Directive({ selector: "morph-outlet", exportAs: "outlet" })
+export class MorphOutlet implements OnDestroy, OnInit {
   private activated: ComponentRef<any> | null = null;
   private _activatedRoute: ActivatedRoute | null = null;
   private name: string;

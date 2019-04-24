@@ -17,6 +17,20 @@
       "dom"
     ],
     "module": "es2015",
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "ng-morph": [
+        "dist/ng-morph"
+      ],
+      "ng-morph/*": [
+        "dist/ng-morph/*"
+      ],
+      "ngdelete": [
+        "dist/ngdelete"
+      ],
+      "ngdelete/*": [
+        "dist/ngdelete/*"
+      ]
+    }
   }
 }
