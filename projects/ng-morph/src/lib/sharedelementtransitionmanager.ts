@@ -2,7 +2,7 @@ import { SharedElementTransition } from "./sharedelement.transition";
 import { compare } from "stacking-order";
 import { leave } from "@angular/core/src/profile/wtf_impl";
 import { HeroAnimation } from "./hero.animations";
-import { getBox, applyBox } from "./util";
+import { getBox, applyBox, parseOptions } from "./util";
 import { FadeOutAnimation } from "./fade-out.animation";
 import { FadeInAnimation } from "./fade-in.animation";
 import { MoveDownAnimation } from "./move-down.animation";
@@ -74,9 +74,15 @@ export class SharedElementTransitionManager {
     const transformGroups: Array<any> = [];
 
     const convertToHeroItem = (x: any) => {
+      const heroValue = x.getAttribute("data-hero");
+      const id = heroValue ? heroValue.split(";")[0] : null;
+      const options = parseOptions(heroValue);
+      console.log("Options ", options);
       return {
         node: x,
-        id: x.getAttribute("data-hero")
+        id: id,
+        heroValue: heroValue,
+        options: options
       };
     };
 
@@ -121,7 +127,7 @@ export class SharedElementTransitionManager {
     });
 
     this.transitions = transformGroups.map(group => {
-      return new SharedElementTransition(group.from.node, group.to.node);
+      return new SharedElementTransition(group.from, group.to);
     });
 
     const queryLeave = (target: any) => toArray(target.querySelectorAll("*[hero-leave]"));
@@ -130,8 +136,10 @@ export class SharedElementTransitionManager {
       .map((x: any) => convertToHeroItem(x));
 
     const leaveAnimations = leaveItems.map(item => {
-      return new this.animationRegistry[(item.node.getAttribute("hero-leave"))](item.node);
-      // return new HeroAnimation(item.node);
+      const heroValue = item.node.getAttribute("hero-leave");
+      const animationType = heroValue.split(";")[0];
+      const options = parseOptions(heroValue);
+      return new this.animationRegistry[animationType](item.node, options);
     });
 
     const queryEnter = (target: any) => toArray(target.querySelectorAll("*[hero-enter]"));
@@ -140,7 +148,10 @@ export class SharedElementTransitionManager {
       .map((x: any) => convertToHeroItem(x));
 
     const enterAnimations = enterItems.map(item => {
-      return new this.animationRegistry[(item.node.getAttribute("hero-enter"))](item.node);
+      const heroValue = item.node.getAttribute("hero-enter");
+      const animationType = heroValue.split(";")[0];
+      const options = parseOptions(heroValue);
+      return new this.animationRegistry[animationType](item.node, options);
       // return new HeroAnimation(item.node);
     });
 

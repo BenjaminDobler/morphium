@@ -19,8 +19,11 @@ export class SharedElementTransition {
     this.prepare(from, to);
   }
 
-  async prepare(from, to) {
+  async prepare(fromHero, toHero) {
     console.log("Shared Element transition ");
+
+    const from = fromHero.node;
+    const to = toHero.node;
 
     const fromContainer: any = document.createElement("div");
     const toContainer: any = document.createElement("div");
@@ -28,7 +31,7 @@ export class SharedElementTransition {
     this.fromClone = from.cloneNode(true);
     this.toClone = to.cloneNode(true);
 
-    const options = parseOptions(from);
+    const options = fromHero.options; // {}; // parseOptions(from);
 
     this.fromClone.setAttribute("style", window.getComputedStyle(from).cssText);
     this.toClone.setAttribute("style", window.getComputedStyle(to).cssText);
@@ -80,7 +83,7 @@ export class SharedElementTransition {
           opacity: 0
         }
       ],
-      { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0 }
+      { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0, easing: options.easing || "ease-in" }
     );
     //animation.pause();
 
@@ -97,7 +100,9 @@ export class SharedElementTransition {
           opacity: 1
         }
       ],
-      { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0 }
+      { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0, easing: options.easing || "ease-in" }
+
+      // { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0, easing: "cubic-bezier(0.175, 0.885, 0.32, 1.275)" }
     );
 
     //from.style.visibility = "hidden";

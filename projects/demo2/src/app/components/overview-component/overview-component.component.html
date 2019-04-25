@@ -1,5 +1,5 @@
-<div #list class="card-list" hero-enter="fade-in" hero-leave="fade-out">
-  <div class="card" hero-options="delay:350;duration:3000" [attr.data-hero]="dataService.selectedCard === item ? 'card' : null" (click)="selectCard(item, $event.currentTarget)" *ngFor="let item of dataService.data">Title: {{ item.title }}</div>
-</div>
+<div style="width: 100%; height: 80px"></div>
 
-<button (click)="clone(list)">Clone</button>
+<div #list class="card-list" hero-enter="fade-in" hero-leave="fade-out">
+  <div class="card" [attr.data-hero]="dataService.selectedCard === item ? 'card;delay:100;duration:400' : null" (click)="selectCard(item, $event.currentTarget)" *ngFor="let item of dataService.data">Title: {{ item.title }}</div>
+</div>
