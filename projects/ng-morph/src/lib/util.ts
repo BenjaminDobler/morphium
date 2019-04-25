@@ -17,3 +17,26 @@ export const applyBox = (box: any, el) => {
   el.style.width = box.width + "px";
   el.style.height = box.height + "px";
 };
+
+export const parseOptions = el => {
+  const options = el.getAttribute("hero-options");
+
+  let optionsObj: any = {};
+
+  if (options) {
+    const optionsA = options.split(";").forEach(o => {
+      const valuePair = o.split(":");
+      optionsObj[valuePair[0]] = valuePair[1];
+    });
+    console.log("OptionsA ", optionsA);
+  }
+  console.log("Options ", optionsObj);
+
+  return optionsObj;
+};
+
+export const resetPosition = el => {
+  el.style.left = 0;
+  el.style.right = 0;
+  el.style.top = 0;
+};

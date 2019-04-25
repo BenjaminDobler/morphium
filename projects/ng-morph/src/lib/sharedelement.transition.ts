@@ -1,4 +1,4 @@
-import { getBox } from "./util";
+import { getBox, parseOptions, applyBox, resetPosition } from "./util";
 
 async function wait(t) {
   return new Promise(resolve => {
@@ -25,39 +25,18 @@ export class SharedElementTransition {
     const fromContainer: any = document.createElement("div");
     const toContainer: any = document.createElement("div");
 
-    //document.querySelector("body").appendChild(fromContainer);
-    //document.querySelector("body").appendChild(toContainer);
-
     this.fromClone = from.cloneNode(true);
     this.toClone = to.cloneNode(true);
 
-    const options = from.getAttribute("hero-options");
-    console.log("Options 1", options);
-
-    let optionsObj: any = {};
-
-    if (options) {
-      const optionsA = options.split(";").forEach(o => {
-        const valuePair = o.split(":");
-        optionsObj[valuePair[0]] = valuePair[1];
-      });
-      console.log("OptionsA ", optionsA);
-    }
-    console.log("Options ", optionsObj);
-
-    const delay = optionsObj.delay || 0;
+    const options = parseOptions(from);
 
     this.fromClone.setAttribute("style", window.getComputedStyle(from).cssText);
     this.toClone.setAttribute("style", window.getComputedStyle(to).cssText);
     this.fromClone.style.marginLeft = "0";
     this.fromClone.style.marginTop = "0";
-    this.fromClone.style.left = 0;
-    this.fromClone.style.right = 0;
-    this.fromClone.style.top = 0;
 
-    this.toClone.style.left = 0;
-    this.toClone.style.right = 0;
-    this.toClone.style.top = 0;
+    resetPosition(this.fromClone);
+    resetPosition(this.toClone);
 
     const fromRect: any = getBox(from, { getMargins: false });
     const toRect: any = getBox(to, { getMargins: false });
@@ -65,22 +44,16 @@ export class SharedElementTransition {
     //const fromStyles = getComputedStyle(from);
     //const toStyles = getComputedStyle(to);
 
-    fromContainer.style.position = "absolute";
-    fromContainer.style.top = fromRect.top + "px";
-    fromContainer.style.left = fromRect.left + "px";
-    fromContainer.style.width = fromRect.width + "px";
-    fromContainer.style.height = fromRect.height + "px";
+    applyBox(fromRect, fromContainer);
+
     fromContainer.style.visibility = "visible";
     fromContainer.style.opacity = "1";
     fromContainer.style.transformOrigin = "left top 0px";
     fromContainer.style.willChange = "transform, opacity";
     fromContainer.style.transform = "translate3d(0, 0, 0)";
 
-    toContainer.style.position = "absolute";
-    toContainer.style.top = toRect.top + "px";
-    toContainer.style.left = toRect.left + "px";
-    toContainer.style.width = toRect.width + "px";
-    toContainer.style.height = toRect.height + "px";
+    applyBox(toRect, toContainer);
+
     toContainer.style.visibility = "visible";
     toContainer.style.opacity = "0";
     toContainer.style.transformOrigin = "left top 0px";
@@ -107,7 +80,7 @@ export class SharedElementTransition {
           opacity: 0
         }
       ],
-      { duration: duration, delay: delay }
+      { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0 }
     );
     //animation.pause();
 
@@ -124,7 +97,7 @@ export class SharedElementTransition {
           opacity: 1
         }
       ],
-      { duration: duration, delay: delay }
+      { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0 }
     );
 
     //from.style.visibility = "hidden";
