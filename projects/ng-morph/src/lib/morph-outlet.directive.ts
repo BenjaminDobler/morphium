@@ -42,7 +42,7 @@ export class MorphOutlet implements OnDestroy, OnInit {
   private _activatedRoute: ActivatedRoute | null = null;
   private name: string;
 
-  private sharedTransitionManager: SharedElementTransitionManager;
+  public sharedTransitionManager: SharedElementTransitionManager;
 
   @Output("activate") activateEvents = new EventEmitter<any>();
   @Output("deactivate") deactivateEvents = new EventEmitter<any>();
@@ -52,9 +52,7 @@ export class MorphOutlet implements OnDestroy, OnInit {
   constructor(private parentContexts: ChildrenOutletContexts, private location: ViewContainerRef, private resolver: ComponentFactoryResolver, @Attribute("name") name: string, private changeDetector: ChangeDetectorRef) {
     this.name = name || "primary";
     let t: any = this;
-
     this.sharedTransitionManager = new SharedElementTransitionManager(this, true);
-
     parentContexts.onChildOutletCreated(this.name, t);
   }
 

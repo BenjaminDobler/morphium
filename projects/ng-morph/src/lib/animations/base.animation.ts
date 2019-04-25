@@ -1,4 +1,4 @@
-import { getBox, applyBox } from "./util";
+import { getBox, applyBox } from "../util";
 
 export class BaseAnimation {
   fromClone: any;
@@ -11,6 +11,8 @@ export class BaseAnimation {
     const fromRect: any = getBox(from, { getMargins: false });
     applyBox(fromRect, this.fromClone);
     this.fromClone.style.visibility = "visible";
+
+    this.initial();
 
     const duration = 350;
 
@@ -36,4 +38,6 @@ export class BaseAnimation {
       opacity: 1
     };
   }
+
+  protected initial() {}
 }

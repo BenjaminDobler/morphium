@@ -1,19 +1,16 @@
 import { SharedElementTransition } from "./sharedelement.transition";
 import { compare } from "stacking-order";
-import { leave } from "@angular/core/src/profile/wtf_impl";
-import { HeroAnimation } from "./hero.animations";
-import { getBox, applyBox, parseOptions } from "./util";
-import { FadeOutAnimation } from "./fade-out.animation";
-import { FadeInAnimation } from "./fade-in.animation";
-import { MoveDownAnimation } from "./move-down.animation";
-import { MoveUpAnimation } from "./move-up.animation";
-async function wait(t) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve();
-    }, t);
-  });
-}
+import { getBox, applyBox, parseOptions, wait } from "./util";
+import { FadeOutAnimation } from "./animations/fade-out.animation";
+import { FadeInAnimation } from "./animations/fade-in.animation";
+import { MoveDownAnimation } from "./animations/move-down.animation";
+import { MoveUpAnimation } from "./animations/move-up.animation";
+import { Injectable } from "@angular/core";
+import { stagger } from "@angular/animations";
+
+@Injectable({
+  providedIn: "root"
+})
 export class SharedElementTransitionManager {
   private oldComponent: any;
   private newComponent: any;
@@ -77,7 +74,6 @@ export class SharedElementTransitionManager {
       const heroValue = x.getAttribute("data-hero");
       const id = heroValue ? heroValue.split(";")[0] : null;
       const options = parseOptions(heroValue);
-      console.log("Options ", options);
       return {
         node: x,
         id: id,
@@ -135,10 +131,20 @@ export class SharedElementTransitionManager {
       .filter(h => filterActive(h))
       .map((x: any) => convertToHeroItem(x));
 
+    const staggerGroups = {};
     const leaveAnimations = leaveItems.map(item => {
       const heroValue = item.node.getAttribute("hero-leave");
       const animationType = heroValue.split(";")[0];
       const options = parseOptions(heroValue);
+      if (options.hasOwnProperty("stagger")) {
+        if (staggerGroups.hasOwnProperty(options.stagger)) {
+          staggerGroups[options.stagger]++;
+          options.delay = 50 * staggerGroups[options.stagger];
+        } else {
+          staggerGroups[options.stagger] = 0;
+          options.delay = 50 * staggerGroups[options.stagger];
+        }
+      }
       return new this.animationRegistry[animationType](item.node, options);
     });
 
@@ -151,11 +157,26 @@ export class SharedElementTransitionManager {
       const heroValue = item.node.getAttribute("hero-enter");
       const animationType = heroValue.split(";")[0];
       const options = parseOptions(heroValue);
+
+      if (options.hasOwnProperty("stagger")) {
+        if (staggerGroups.hasOwnProperty(options.stagger)) {
+          staggerGroups[options.stagger]++;
+          options.delay = 50 * staggerGroups[options.stagger];
+        } else {
+          staggerGroups[options.stagger] = 0;
+          options.delay = 50 * staggerGroups[options.stagger];
+        }
+      }
+
       return new this.animationRegistry[animationType](item.node, options);
       // return new HeroAnimation(item.node);
     });
 
     oldView.remove();
+
+    // var animations = document.getAnimations ? document.getAnimations() : document.timeline.getAnimations();
+
+    // animations.pause();
   }
 
   public play() {

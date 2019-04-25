@@ -1,16 +1,19 @@
-import { getBox, applyBox } from "./util";
 import { BaseAnimation } from "./base.animation";
 
-export class FadeInAnimation extends BaseAnimation {
+export class FadeOutAnimation extends BaseAnimation {
+  protected initial() {
+    this.fromClone.style.opacity = 1;
+  }
+
   protected getFromTransformations() {
     return {
-      opacity: 0
+      opacity: 1
     };
   }
 
   protected getToTransformation() {
     return {
-      opacity: 1
+      opacity: 0
     };
   }
 }
