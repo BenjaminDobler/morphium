@@ -1,0 +1,5 @@
+<div #list class="card-list" hero-enter="fade-in" hero-leave="fade-out">
+  <div class="card" hero-options="delay:350" [attr.data-hero]="dataService.selectedCard === item ? 'card' : null" (click)="selectCard(item, $event.currentTarget)" *ngFor="let item of dataService.data">Title: {{ item.title }}</div>
+</div>
+
+<button (click)="clone(list)">Clone</button>

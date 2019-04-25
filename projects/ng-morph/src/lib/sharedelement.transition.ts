@@ -1,3 +1,13 @@
+import { getBox } from "./util";
+
+async function wait(t) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, t);
+  });
+}
+
 export class SharedElementTransition {
   fromClone: any;
   toClone: any;
@@ -6,19 +16,11 @@ export class SharedElementTransition {
   toAnimation: any;
 
   constructor(from: any, to: any) {
+    this.prepare(from, to);
+  }
+
+  async prepare(from, to) {
     console.log("Shared Element transition ");
-
-    const getBox = (elm, { getMargins = false } = {}) => {
-      const box = elm.getBoundingClientRect();
-      const styles = getComputedStyle(elm);
-
-      return {
-        top: box.top + window.scrollY - (getMargins ? parseInt(styles.marginTop, 10) : 0),
-        left: box.left + window.scrollX - (getMargins ? parseInt(styles.marginLeft, 10) : 0),
-        width: box.width + (getMargins ? parseInt(styles.marginLeft, 10) + parseInt(styles.marginRight, 10) : 0),
-        height: box.height + (getMargins ? parseInt(styles.marginTop, 10) + parseInt(styles.marginBottom, 10) : 0)
-      };
-    };
 
     const fromContainer: any = document.createElement("div");
     const toContainer: any = document.createElement("div");
@@ -28,6 +30,22 @@ export class SharedElementTransition {
 
     this.fromClone = from.cloneNode(true);
     this.toClone = to.cloneNode(true);
+
+    const options = from.getAttribute("hero-options");
+    console.log("Options 1", options);
+
+    let optionsObj: any = {};
+
+    if (options) {
+      const optionsA = options.split(";").forEach(o => {
+        const valuePair = o.split(":");
+        optionsObj[valuePair[0]] = valuePair[1];
+      });
+      console.log("OptionsA ", optionsA);
+    }
+    console.log("Options ", optionsObj);
+
+    const delay = optionsObj.delay || 0;
 
     this.fromClone.setAttribute("style", window.getComputedStyle(from).cssText);
     this.toClone.setAttribute("style", window.getComputedStyle(to).cssText);
@@ -89,7 +107,7 @@ export class SharedElementTransition {
           opacity: 0
         }
       ],
-      { duration: duration }
+      { duration: duration, delay: delay }
     );
     //animation.pause();
 
@@ -106,7 +124,7 @@ export class SharedElementTransition {
           opacity: 1
         }
       ],
-      { duration: duration }
+      { duration: duration, delay: delay }
     );
 
     //from.style.visibility = "hidden";

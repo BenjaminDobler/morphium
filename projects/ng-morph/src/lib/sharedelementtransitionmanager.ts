@@ -1,13 +1,33 @@
 import { SharedElementTransition } from "./sharedelement.transition";
 import { compare } from "stacking-order";
-
+import { leave } from "@angular/core/src/profile/wtf_impl";
+import { HeroAnimation } from "./hero.animations";
+import { getBox, applyBox } from "./util";
+import { FadeOutAnimation } from "./fade-out.animation";
+import { FadeInAnimation } from "./fade-in.animation";
+import { MoveDownAnimation } from "./move-down.animation";
+import { MoveUpAnimation } from "./move-up.animation";
+async function wait(t) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, t);
+  });
+}
 export class SharedElementTransitionManager {
   private oldComponent: any;
   private newComponent: any;
 
+  animationRegistry: any = {};
+
   public transitions: SharedElementTransition[];
 
   constructor(outlet: any, waitForRouterAnimations: boolean) {
+    this.animationRegistry["fade-out"] = FadeOutAnimation;
+    this.animationRegistry["fade-in"] = FadeInAnimation;
+    this.animationRegistry["move-down"] = MoveDownAnimation;
+    this.animationRegistry["move-up"] = MoveUpAnimation;
+
     outlet.activateEvents.subscribe((data: any) => {
       const activatedElement: any = outlet.activated.location.nativeElement; // activated is private!!!
       if (this.newComponent !== activatedElement) {
@@ -35,7 +55,22 @@ export class SharedElementTransitionManager {
     }
   }
 
-  prepareTransition(newView: any, oldView: any) {
+  async prepareTransition(newView: any, oldView: any) {
+    // We have to wait here one frame for the new view to be initialized.
+    // The Problem is that the old view gets destroyed immediately so we create a copy here
+    const oldViewClone = oldView.cloneNode(true);
+
+    const box: any = getBox(oldView, { getMargins: false });
+    console.log("BOX ", box);
+    applyBox(box, oldViewClone);
+
+    // oldViewClone.style.visibility = "hidden";
+    newView.style.visibility = "hidden";
+    document.querySelector("#morph-holder").appendChild(oldViewClone);
+    await wait(10);
+    oldView = oldViewClone;
+    newView.style.visibility = "visible";
+
     const transformGroups: Array<any> = [];
 
     const convertToHeroItem = (x: any) => {
@@ -74,7 +109,6 @@ export class SharedElementTransitionManager {
 
     for (const i in groups) {
       if (groups[i].length === 2) {
-        console.log("Groups ", i);
         transformGroups.push({
           from: groups[i][0],
           to: groups[i][1]
@@ -89,6 +123,28 @@ export class SharedElementTransitionManager {
     this.transitions = transformGroups.map(group => {
       return new SharedElementTransition(group.from.node, group.to.node);
     });
+
+    const queryLeave = (target: any) => toArray(target.querySelectorAll("*[hero-leave]"));
+    const leaveItems: Array<any> = queryLeave(oldView)
+      .filter(h => filterActive(h))
+      .map((x: any) => convertToHeroItem(x));
+
+    const leaveAnimations = leaveItems.map(item => {
+      return new this.animationRegistry[(item.node.getAttribute("hero-leave"))](item.node);
+      // return new HeroAnimation(item.node);
+    });
+
+    const queryEnter = (target: any) => toArray(target.querySelectorAll("*[hero-enter]"));
+    const enterItems: Array<any> = queryEnter(newView)
+      .filter(h => filterActive(h))
+      .map((x: any) => convertToHeroItem(x));
+
+    const enterAnimations = enterItems.map(item => {
+      return new this.animationRegistry[(item.node.getAttribute("hero-enter"))](item.node);
+      // return new HeroAnimation(item.node);
+    });
+
+    oldView.remove();
   }
 
   public play() {
