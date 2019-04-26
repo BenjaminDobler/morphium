@@ -172,10 +172,7 @@ export class SharedElementTransitionManager {
           options.delay = 50 * staggerGroups[options.stagger];
         }
       }
-
       return new this.animationRegistry[animationType](item.node, options);
-
-      // return new HeroAnimation(item.node);
     });
 
     oldView.remove();
@@ -198,16 +195,10 @@ export class SharedElementTransitionManager {
 
     let duration = 0;
     this.animations.forEach(ani => {
-      console.log("Ani ", ani.options.duration);
       duration = Math.max(ani.options.delay + ani.options.duration);
     });
 
     this.duration = duration;
-    console.log("Duration ", duration);
-
-    // var animations = document.getAnimations ? document.getAnimations() : document.timeline.getAnimations();
-
-    // animations.pause();
   }
 
   public setTime(val) {

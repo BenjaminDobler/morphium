@@ -60,6 +60,7 @@ export class SharedElementTransition {
     fromContainer.style.transformOrigin = "left top 0px";
     fromContainer.style.willChange = "transform, opacity";
     fromContainer.style.transform = "translate3d(0, 0, 0)";
+    fromContainer.style.zIndex = 1000;
 
     applyBox(toRect, toContainer);
 
@@ -68,6 +69,7 @@ export class SharedElementTransition {
     toContainer.style.transformOrigin = "left top 0px";
     toContainer.style.willChange = "transform, opacity";
     toContainer.style.transform = "translate3d(" + (fromRect.left - toRect.left) + "px, " + (fromRect.top - toRect.top) + "px, 0)";
+    toContainer.style.zIndex = 1000;
 
     fromContainer.append(this.fromClone);
     toContainer.append(this.toClone);
