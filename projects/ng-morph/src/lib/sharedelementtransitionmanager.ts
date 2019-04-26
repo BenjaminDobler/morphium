@@ -15,6 +15,11 @@ export class SharedElementTransitionManager {
   private oldComponent: any;
   private newComponent: any;
 
+  public animations: any[] = [];
+  public duration = 0;
+
+  public timelineMode = false;
+
   animationRegistry: any = {};
 
   public transitions: SharedElementTransition[];
@@ -169,20 +174,51 @@ export class SharedElementTransitionManager {
       }
 
       return new this.animationRegistry[animationType](item.node, options);
+
       // return new HeroAnimation(item.node);
     });
 
     oldView.remove();
+
+    if (this.timelineMode) {
+      leaveAnimations.forEach((a: any) => {
+        a.animations.map(x => x.pause());
+      });
+
+      enterAnimations.forEach((a: any) => {
+        a.animations.map(x => x.pause());
+      });
+
+      this.transitions.forEach((a: any) => {
+        a.animations.map(x => x.pause());
+      });
+    }
+
+    this.animations = [...leaveAnimations, ...enterAnimations, ...this.transitions];
+
+    let duration = 0;
+    this.animations.forEach(ani => {
+      console.log("Ani ", ani.options.duration);
+      duration = Math.max(ani.options.delay + ani.options.duration);
+    });
+
+    this.duration = duration;
+    console.log("Duration ", duration);
 
     // var animations = document.getAnimations ? document.getAnimations() : document.timeline.getAnimations();
 
     // animations.pause();
   }
 
+  public setTime(val) {
+    this.animations.forEach(a => {
+      a.animations.forEach(an => (an.currentTime = val));
+    });
+  }
+
   public play() {
-    this.transitions.forEach((s: SharedElementTransition) => {
-      s.toAnimation.play();
-      s.fromAnimation.play();
+    this.animations.forEach(a => {
+      a.animations.forEach(an => an.play());
     });
   }
 

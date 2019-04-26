@@ -1,10 +1,17 @@
 import { getBox, applyBox } from "../util";
 
 export class BaseAnimation {
+  public animations: any[] = [];
+  public options: any;
+
   fromClone: any;
   fromAnimation: any;
 
   constructor(from: any, options) {
+    options.duration = parseInt(options.duration, 10) || 350;
+    options.delay = parseInt(options.delay, 10) || 0;
+    this.options = options;
+
     const container = document.querySelector("#morph-holder");
     from.style.visibility = "hidden";
     this.fromClone = from.cloneNode(true);
@@ -16,15 +23,15 @@ export class BaseAnimation {
 
     const duration = 350;
 
-    const animation = this.fromClone.animate([this.getFromTransformations(), this.getToTransformation()], { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0, easing: options.easing || "ease-in" });
+    const animation = this.fromClone.animate([this.getFromTransformations(), this.getToTransformation()], { duration: options.duration, delay: options.delay, easing: options.easing || "ease-in", fill: "forwards" });
 
     animation.onfinish = () => {
       container.removeChild(this.fromClone);
       from.style.visibility = "visible";
     };
     container.appendChild(this.fromClone);
-
     this.fromAnimation = animation;
+    this.animations.push(animation);
   }
 
   protected getFromTransformations(): any {

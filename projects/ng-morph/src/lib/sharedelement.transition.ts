@@ -12,6 +12,8 @@ export class SharedElementTransition {
   fromClone: any;
   toClone: any;
 
+  public animations: any[] = [];
+  public options: any;
   fromAnimation: any;
   toAnimation: any;
 
@@ -32,6 +34,10 @@ export class SharedElementTransition {
     this.toClone = to.cloneNode(true);
 
     const options = fromHero.options; // {}; // parseOptions(from);
+    options.duration = parseInt(options.duration, 10) || 350;
+    options.delay = parseInt(options.delay, 10) || 0;
+
+    this.options = options;
 
     this.fromClone.setAttribute("style", window.getComputedStyle(from).cssText);
     this.toClone.setAttribute("style", window.getComputedStyle(to).cssText);
@@ -83,7 +89,7 @@ export class SharedElementTransition {
           opacity: 0
         }
       ],
-      { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0, easing: options.easing || "ease-in" }
+      { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0, easing: options.easing || "ease-in", fill: "forwards" }
     );
     //animation.pause();
 
@@ -100,7 +106,7 @@ export class SharedElementTransition {
           opacity: 1
         }
       ],
-      { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0, easing: options.easing || "ease-in" }
+      { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0, easing: options.easing || "ease-in", fill: "forwards" }
 
       // { duration: parseInt(options.duration, 10) || 350, delay: options.delay || 0, easing: "cubic-bezier(0.175, 0.885, 0.32, 1.275)" }
     );
@@ -125,6 +131,9 @@ export class SharedElementTransition {
 
     this.fromAnimation = animation;
     this.toAnimation = animationTo;
+
+    this.animations.push(animation);
+    this.animations.push(animationTo);
   }
 
   getDepth(el: Node) {

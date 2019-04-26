@@ -1,0 +1,29 @@
+:host {
+  left: 2%;
+  width: 96%;
+  position: fixed;
+  bottom: 10px;
+  background: #fff;
+  z-index: 1000;
+}
+
+.timeline {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.track {
+  position: relative;
+  border: 1px solid #000;
+  width: 100%;
+  height: 5px;
+  margin-bottom: 3px;
+}
+
+.animation {
+  position: absolute;
+  width: 30px;
+  height: 5px;
+  background: #ff0000;
+}
