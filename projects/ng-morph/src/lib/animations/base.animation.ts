@@ -1,4 +1,4 @@
-import { getBox, applyBox } from "../util";
+import {getBox, applyBox} from '../util';
 
 export class BaseAnimation {
   public animations: any[] = [];
@@ -12,22 +12,25 @@ export class BaseAnimation {
     options.delay = parseInt(options.delay, 10) || 0;
     this.options = options;
 
-    const container = document.querySelector("#morph-holder");
-    from.style.visibility = "hidden";
+    const container = document.querySelector('#morph-holder');
+    from.style.visibility = 'hidden';
     this.fromClone = from.cloneNode(true);
-    const fromRect: any = getBox(from, { getMargins: false });
+    const fromRect: any = getBox(from, {getMargins: false});
     applyBox(fromRect, this.fromClone);
-    this.fromClone.style.visibility = "visible";
+    this.fromClone.style.visibility = 'visible';
 
     this.initial();
-
-    const duration = 350;
-
-    const animation = this.fromClone.animate([this.getFromTransformations(), this.getToTransformation()], { duration: options.duration, delay: options.delay, easing: options.easing || "ease-in", fill: "forwards" });
+    
+    const animation = this.fromClone.animate([this.getFromTransformations(), this.getToTransformation()], {
+      duration: options.duration,
+      delay: options.delay,
+      easing: options.easing || 'ease-in',
+      fill: 'forwards'
+    });
 
     animation.onfinish = () => {
       container.removeChild(this.fromClone);
-      from.style.visibility = "visible";
+      from.style.visibility = 'visible';
     };
     container.appendChild(this.fromClone);
     this.fromAnimation = animation;
@@ -46,5 +49,6 @@ export class BaseAnimation {
     };
   }
 
-  protected initial() {}
+  protected initial() {
+  }
 }

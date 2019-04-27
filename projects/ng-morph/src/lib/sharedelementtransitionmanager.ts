@@ -1,14 +1,14 @@
-import { SharedElementTransition } from "./sharedelement.transition";
-import { compare } from "stacking-order";
-import { getBox, applyBox, parseOptions, wait } from "./util";
-import { FadeOutAnimation } from "./animations/fade-out.animation";
-import { FadeInAnimation } from "./animations/fade-in.animation";
-import { MoveDownAnimation } from "./animations/move-down.animation";
-import { MoveUpAnimation } from "./animations/move-up.animation";
-import { Injectable } from "@angular/core";
+import {SharedElementTransition} from './sharedelement.transition';
+import {compare} from 'stacking-order';
+import {getBox, applyBox, parseOptions, wait} from './util';
+import {FadeOutAnimation} from './animations/fade-out.animation';
+import {FadeInAnimation} from './animations/fade-in.animation';
+import {MoveDownAnimation} from './animations/move-down.animation';
+import {MoveUpAnimation} from './animations/move-up.animation';
+import {Injectable} from '@angular/core';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class SharedElementTransitionManager {
   private oldComponent: any;
@@ -24,10 +24,10 @@ export class SharedElementTransitionManager {
   public transitions: SharedElementTransition[];
 
   constructor(outlet: any) {
-    this.animationRegistry["fade-out"] = FadeOutAnimation;
-    this.animationRegistry["fade-in"] = FadeInAnimation;
-    this.animationRegistry["move-down"] = MoveDownAnimation;
-    this.animationRegistry["move-up"] = MoveUpAnimation;
+    this.animationRegistry['fade-out'] = FadeOutAnimation;
+    this.animationRegistry['fade-in'] = FadeInAnimation;
+    this.animationRegistry['move-down'] = MoveDownAnimation;
+    this.animationRegistry['move-up'] = MoveUpAnimation;
 
     outlet.activateEvents.subscribe((data: any) => {
       const activatedElement: any = outlet.activated.location.nativeElement; // activated is private!!!
@@ -54,20 +54,20 @@ export class SharedElementTransitionManager {
     // The Problem is that the old view gets destroyed immediately so we create a copy here
     const oldViewClone = oldView.cloneNode(true);
 
-    const box: any = getBox(oldView, { getMargins: false });
+    const box: any = getBox(oldView, {getMargins: false});
     applyBox(box, oldViewClone);
 
-    newView.style.visibility = "hidden";
-    document.querySelector("#morph-holder").appendChild(oldViewClone);
+    newView.style.visibility = 'hidden';
+    document.querySelector('#morph-holder').appendChild(oldViewClone);
     await wait(10);
     oldView = oldViewClone;
-    newView.style.visibility = "visible";
+    newView.style.visibility = 'visible';
 
     const transformGroups: Array<any> = [];
 
     const convertToHeroItem = (x: any) => {
-      const heroValue = x.getAttribute("data-hero");
-      const id = heroValue ? heroValue.split(";")[0] : null;
+      const heroValue = x.getAttribute('data-hero');
+      const id = heroValue ? heroValue.split(';')[0] : null;
       const options = parseOptions(heroValue);
       return {
         node: x,
@@ -77,14 +77,14 @@ export class SharedElementTransitionManager {
       };
     };
 
-    const filterActive = (x: any) => x.getAttribute("data-hero-active") !== "false";
+    const filterActive = (x: any) => x.getAttribute('data-hero-active') !== 'false';
 
     const toArray = (nodeList: any) => [].slice.call(nodeList);
 
-    const queryHeros = (target: any) => toArray(target.querySelectorAll("*[data-hero]"));
+    const queryHeros = (target: any) => toArray(target.querySelectorAll('*[data-hero]'));
 
     const groupItems = (items, key) => {
-      const result = items.reduce(function(r, a) {
+      const result = items.reduce(function (r, a) {
         r[a[key]] = r[a[key]] || [];
         r[a[key]].push(a);
         return r;
@@ -102,7 +102,7 @@ export class SharedElementTransitionManager {
 
     const allItems: Array<any> = [...oldHeroItems, ...newHeroItems];
 
-    const groups = groupItems(allItems, "id");
+    const groups = groupItems(allItems, 'id');
 
     for (const i in groups) {
       if (groups[i].length === 2) {
@@ -121,17 +121,17 @@ export class SharedElementTransitionManager {
       return new SharedElementTransition(group.from, group.to);
     });
 
-    const queryLeave = (target: any) => toArray(target.querySelectorAll("*[hero-leave]"));
+    const queryLeave = (target: any) => toArray(target.querySelectorAll('*[hero-leave]'));
     const leaveItems: Array<any> = queryLeave(oldView)
       .filter(h => filterActive(h))
       .map((x: any) => convertToHeroItem(x));
 
     const staggerGroups = {};
     const leaveAnimations = leaveItems.map(item => {
-      const heroValue = item.node.getAttribute("hero-leave");
-      const animationType = heroValue.split(";")[0];
+      const heroValue = item.node.getAttribute('hero-leave');
+      const animationType = heroValue.split(';')[0];
       const options = parseOptions(heroValue);
-      if (options.hasOwnProperty("stagger")) {
+      if (options.hasOwnProperty('stagger')) {
         if (staggerGroups.hasOwnProperty(options.stagger)) {
           staggerGroups[options.stagger]++;
           options.delay = 50 * staggerGroups[options.stagger];
@@ -143,17 +143,17 @@ export class SharedElementTransitionManager {
       return new this.animationRegistry[animationType](item.node, options);
     });
 
-    const queryEnter = (target: any) => toArray(target.querySelectorAll("*[hero-enter]"));
+    const queryEnter = (target: any) => toArray(target.querySelectorAll('*[hero-enter]'));
     const enterItems: Array<any> = queryEnter(newView)
       .filter(h => filterActive(h))
       .map((x: any) => convertToHeroItem(x));
 
     const enterAnimations = enterItems.map(item => {
-      const heroValue = item.node.getAttribute("hero-enter");
-      const animationType = heroValue.split(";")[0];
+      const heroValue = item.node.getAttribute('hero-enter');
+      const animationType = heroValue.split(';')[0];
       const options = parseOptions(heroValue);
 
-      if (options.hasOwnProperty("stagger")) {
+      if (options.hasOwnProperty('stagger')) {
         if (staggerGroups.hasOwnProperty(options.stagger)) {
           staggerGroups[options.stagger]++;
           options.delay = 50 * staggerGroups[options.stagger];
