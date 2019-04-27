@@ -1,0 +1,9 @@
+<input type="checkbox" [value]="transitionManager.timelineMode" (change)="transitionManager.timelineMode = !outlet.sharedTransitionManager.timelineMode" />
+<button (click)="play()">Play</button>
+<br />
+<input style="width:100%" (input)="onPlayhead($event.currentTarget.value)" type="range" min="0" [attr.max]="transitionManager.duration" />
+<div class="timeline">
+  <div class="track" *ngFor="let animation of transitionManager.animations">
+    <div class="animation" [style.width]="(animation.options.duration / transitionManager.duration) * 100 + '%'" [style.transform]="'translateX(' + (animation.options.delay / transitionManager.duration) * 100 + '%)'"></div>
+  </div>
+</div>

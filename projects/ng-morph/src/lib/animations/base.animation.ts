@@ -20,7 +20,7 @@ export class BaseAnimation {
     this.fromClone.style.visibility = 'visible';
 
     this.initial();
-    
+
     const animation = this.fromClone.animate([this.getFromTransformations(), this.getToTransformation()], {
       duration: options.duration,
       delay: options.delay,

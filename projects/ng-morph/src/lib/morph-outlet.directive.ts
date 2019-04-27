@@ -6,11 +6,25 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { Attribute, ChangeDetectorRef, ComponentFactoryResolver, ComponentRef, Directive, EventEmitter, Injector, OnDestroy, OnInit, Output, ViewContainerRef } from "@angular/core";
+import {
+  ApplicationRef,
+  Attribute,
+  ChangeDetectorRef,
+  ComponentFactoryResolver,
+  ComponentRef,
+  Directive, EmbeddedViewRef,
+  EventEmitter, HostListener,
+  Injector,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewContainerRef
+} from '@angular/core';
 
-import { ChildrenOutletContexts, RouterOutlet } from "@angular/router";
-import { ActivatedRoute } from "@angular/router";
-import { SharedElementTransitionManager } from "./sharedelementtransitionmanager";
+import {ChildrenOutletContexts, RouterOutlet} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
+import {SharedElementTransitionManager} from './sharedelementtransitionmanager';
+import {EditorComponent} from './editor/editor.component';
 
 /**
  * @whatItDoes Acts as a placeholder that Angular dynamically fills based on the current router
@@ -36,24 +50,75 @@ import { SharedElementTransitionManager } from "./sharedelementtransitionmanager
  *
  * @stable
  */
-@Directive({ selector: "morph-outlet", exportAs: "outlet" })
+@Directive({selector: 'morph-outlet', exportAs: 'outlet'})
 export class MorphOutlet implements OnDestroy, OnInit {
   private activated: ComponentRef<any> | null = null;
   private _activatedRoute: ActivatedRoute | null = null;
   private name: string;
+  public editorOpen = false;
 
   public sharedTransitionManager: SharedElementTransitionManager;
 
-  @Output("activate") activateEvents = new EventEmitter<any>();
-  @Output("deactivate") deactivateEvents = new EventEmitter<any>();
+  @Output('activate') activateEvents = new EventEmitter<any>();
+  @Output('deactivate') deactivateEvents = new EventEmitter<any>();
 
-  @Output("activate2") activateEvents2 = new EventEmitter<any>();
+  @Output('activate2') activateEvents2 = new EventEmitter<any>();
 
-  constructor(private parentContexts: ChildrenOutletContexts, private location: ViewContainerRef, private resolver: ComponentFactoryResolver, @Attribute("name") name: string, private changeDetector: ChangeDetectorRef) {
-    this.name = name || "primary";
+  constructor(private parentContexts: ChildrenOutletContexts,
+              private location: ViewContainerRef,
+              private resolver: ComponentFactoryResolver,
+              @Attribute('name') name: string,
+              private changeDetector: ChangeDetectorRef,
+              private appRef: ApplicationRef,
+              private injector: Injector) {
+    this.name = name || 'primary';
     let t: any = this;
     this.sharedTransitionManager = new SharedElementTransitionManager(this);
     parentContexts.onChildOutletCreated(this.name, t);
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    console.log(event);
+    if (event.key === 'a') {
+      this.toggleEditor();
+    }
+  }
+
+  toggleEditor() {
+    if (this.editorOpen) {
+
+    } else {
+      this.attachEditor();
+    }
+    this.editorOpen = !this.editorOpen;
+  }
+
+  attachEditor() {
+    // 1. Create a component reference from the component
+    const componentRef = this.resolver
+      .resolveComponentFactory(EditorComponent)
+      .create(this.injector);
+
+    componentRef.instance.transitionManager = this.sharedTransitionManager;
+
+    // 2. Attach component to the appRef so that it's inside the ng component tree
+    this.appRef.attachView(componentRef.hostView);
+
+    // 3. Get DOM element from component
+    const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
+      .rootNodes[0] as HTMLElement;
+
+    // 4. Append DOM element to the body
+    document.body.appendChild(domElem);
+
+    /*
+    // 5. Wait some time and remove it from the component tree and from the DOM
+    setTimeout(() => {
+      this.appRef.detachView(componentRef.hostView);
+      componentRef.destroy();
+    }, 3000);
+    */
   }
 
   ngOnDestroy(): void {
@@ -82,12 +147,16 @@ export class MorphOutlet implements OnDestroy, OnInit {
   }
 
   get component(): Object {
-    if (!this.activated) throw new Error("Outlet is not activated");
+    if (!this.activated) {
+      throw new Error('Outlet is not activated');
+    }
     return this.activated.instance;
   }
 
   get activatedRoute(): ActivatedRoute {
-    if (!this.activated) throw new Error("Outlet is not activated");
+    if (!this.activated) {
+      throw new Error('Outlet is not activated');
+    }
     return this._activatedRoute as ActivatedRoute;
   }
 
@@ -102,7 +171,9 @@ export class MorphOutlet implements OnDestroy, OnInit {
    * Called when the `RouteReuseStrategy` instructs to detach the subtree
    */
   detach(): ComponentRef<any> {
-    if (!this.activated) throw new Error("Outlet is not activated");
+    if (!this.activated) {
+      throw new Error('Outlet is not activated');
+    }
     this.location.detach();
     const cmp = this.activated;
     this.activated = null;
@@ -133,7 +204,7 @@ export class MorphOutlet implements OnDestroy, OnInit {
 
   activateWith(activatedRoute: any, resolver: ComponentFactoryResolver | null) {
     if (this.isActivated) {
-      throw new Error("Cannot activate an already activated outlet");
+      throw new Error('Cannot activate an already activated outlet');
     }
     this._activatedRoute = activatedRoute;
     const snapshot = activatedRoute._futureSnapshot;
@@ -147,14 +218,15 @@ export class MorphOutlet implements OnDestroy, OnInit {
     // Calling `markForCheck` to make sure we will run the change detection when the
     // `RouterOutlet` is inside a `ChangeDetectionStrategy.OnPush` component.
     this.changeDetector.markForCheck();
-    this.activateEvents2.emit({ new: this.activated, old: this.currentComponent });
+    this.activateEvents2.emit({new: this.activated, old: this.currentComponent});
     this.activateEvents.emit(this.activated.instance);
     this.currentComponent = this.activated;
   }
 }
 
 class OutletInjector implements Injector {
-  constructor(private route: ActivatedRoute, private childContexts: ChildrenOutletContexts, private parent: Injector) {}
+  constructor(private route: ActivatedRoute, private childContexts: ChildrenOutletContexts, private parent: Injector) {
+  }
 
   get(token: any, notFoundValue?: any): any {
     if (token === ActivatedRoute) {
