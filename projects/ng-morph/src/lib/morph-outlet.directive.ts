@@ -56,6 +56,7 @@ export class MorphOutlet implements OnDestroy, OnInit {
   private _activatedRoute: ActivatedRoute | null = null;
   private name: string;
   public editorOpen = false;
+  private editorRef:ComponentRef<EditorComponent>;
 
   public sharedTransitionManager: SharedElementTransitionManager;
 
@@ -87,14 +88,19 @@ export class MorphOutlet implements OnDestroy, OnInit {
 
   toggleEditor() {
     if (this.editorOpen) {
-
+      this.removeEditor();
     } else {
-      this.attachEditor();
+      this.editorRef = this.attachEditor();
     }
     this.editorOpen = !this.editorOpen;
   }
 
-  attachEditor() {
+  removeEditor() {
+    this.appRef.detachView(this.editorRef.hostView);
+    this.editorRef.destroy();
+  }
+
+  attachEditor(): ComponentRef<EditorComponent> {
     // 1. Create a component reference from the component
     const componentRef = this.resolver
       .resolveComponentFactory(EditorComponent)
@@ -119,6 +125,7 @@ export class MorphOutlet implements OnDestroy, OnInit {
       componentRef.destroy();
     }, 3000);
     */
+    return componentRef;
   }
 
   ngOnDestroy(): void {
