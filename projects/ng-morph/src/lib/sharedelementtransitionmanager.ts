@@ -6,7 +6,6 @@ import { FadeInAnimation } from "./animations/fade-in.animation";
 import { MoveDownAnimation } from "./animations/move-down.animation";
 import { MoveUpAnimation } from "./animations/move-up.animation";
 import { Injectable } from "@angular/core";
-import { stagger } from "@angular/animations";
 
 @Injectable({
   providedIn: "root"
@@ -24,7 +23,7 @@ export class SharedElementTransitionManager {
 
   public transitions: SharedElementTransition[];
 
-  constructor(outlet: any, waitForRouterAnimations: boolean) {
+  constructor(outlet: any) {
     this.animationRegistry["fade-out"] = FadeOutAnimation;
     this.animationRegistry["fade-in"] = FadeInAnimation;
     this.animationRegistry["move-down"] = MoveDownAnimation;
@@ -39,14 +38,7 @@ export class SharedElementTransitionManager {
         this.newComponent = activatedElement;
         if (this.newComponent && this.oldComponent) {
           this.animationStarted();
-          console.log(this.newComponent);
         }
-        /*
-        if (this.newComponent && this.oldComponent && !waitForRouterAnimations) {
-          this.prepareTransition(this.newComponent, this.oldComponent);
-          console.log('=============== PREPARE PAGE TRANSITION');
-        }
-        */
       }
     });
   }
@@ -63,10 +55,8 @@ export class SharedElementTransitionManager {
     const oldViewClone = oldView.cloneNode(true);
 
     const box: any = getBox(oldView, { getMargins: false });
-    console.log("BOX ", box);
     applyBox(box, oldViewClone);
 
-    // oldViewClone.style.visibility = "hidden";
     newView.style.visibility = "hidden";
     document.querySelector("#morph-holder").appendChild(oldViewClone);
     await wait(10);
