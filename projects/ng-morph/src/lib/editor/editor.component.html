@@ -1,4 +1,4 @@
-<input type="checkbox" [value]="transitionManager.timelineMode" (change)="transitionManager.timelineMode = !outlet.sharedTransitionManager.timelineMode" />
+<input type="checkbox" [value]="transitionManager.timelineMode" (change)="transitionManager.timelineMode = !transitionManager.timelineMode" />
 <button (click)="play()">Play</button>
 <br />
 <input style="width:100%" (input)="onPlayhead($event.currentTarget.value)" type="range" min="0" [attr.max]="transitionManager.duration" />

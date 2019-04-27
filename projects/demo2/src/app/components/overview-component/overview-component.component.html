@@ -1,5 +1,5 @@
 <div style="width: 100%; height: 80px"></div>
 
-<div #list class="card-list" hero-enter="fade-in;delay:300" hero-leave="fade-out">
-  <div class="card" [attr.data-hero]="dataService.selectedCard === item ? 'card;delay:100;duration:250' : null" (click)="selectCard(item, $event.currentTarget)" *ngFor="let item of dataService.data">Title: {{ item.title }}</div>
+<div #list class="card-list" morph-enter="fade-in;delay:300" morph-leave="fade-out">
+  <div class="card" [attr.morph-shared]="dataService.selectedCard === item ? 'card;delay:100;duration:250' : null" (click)="selectCard(item, $event.currentTarget)" *ngFor="let item of dataService.data">Title: {{ item.title }}</div>
 </div>

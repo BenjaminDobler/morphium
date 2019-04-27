@@ -66,7 +66,7 @@ export class SharedElementTransitionManager {
     const transformGroups: Array<any> = [];
 
     const convertToHeroItem = (x: any) => {
-      const heroValue = x.getAttribute('data-hero');
+      const heroValue = x.getAttribute('morph-shared');
       const id = heroValue ? heroValue.split(';')[0] : null;
       const options = parseOptions(heroValue);
       return {
@@ -77,11 +77,11 @@ export class SharedElementTransitionManager {
       };
     };
 
-    const filterActive = (x: any) => x.getAttribute('data-hero-active') !== 'false';
+    const filterActive = (x: any) => x.getAttribute('morph-shared-active') !== 'false';
 
     const toArray = (nodeList: any) => [].slice.call(nodeList);
 
-    const queryHeros = (target: any) => toArray(target.querySelectorAll('*[data-hero]'));
+    const queryHeros = (target: any) => toArray(target.querySelectorAll('*[morph-shared]'));
 
     const groupItems = (items, key) => {
       const result = items.reduce(function (r, a) {
@@ -121,14 +121,14 @@ export class SharedElementTransitionManager {
       return new SharedElementTransition(group.from, group.to);
     });
 
-    const queryLeave = (target: any) => toArray(target.querySelectorAll('*[hero-leave]'));
+    const queryLeave = (target: any) => toArray(target.querySelectorAll('*[morph-leave]'));
     const leaveItems: Array<any> = queryLeave(oldView)
       .filter(h => filterActive(h))
       .map((x: any) => convertToHeroItem(x));
 
     const staggerGroups = {};
     const leaveAnimations = leaveItems.map(item => {
-      const heroValue = item.node.getAttribute('hero-leave');
+      const heroValue = item.node.getAttribute('morph-leave');
       const animationType = heroValue.split(';')[0];
       const options = parseOptions(heroValue);
       if (options.hasOwnProperty('stagger')) {
@@ -143,13 +143,13 @@ export class SharedElementTransitionManager {
       return new this.animationRegistry[animationType](item.node, options);
     });
 
-    const queryEnter = (target: any) => toArray(target.querySelectorAll('*[hero-enter]'));
+    const queryEnter = (target: any) => toArray(target.querySelectorAll('*[morph-enter]'));
     const enterItems: Array<any> = queryEnter(newView)
       .filter(h => filterActive(h))
       .map((x: any) => convertToHeroItem(x));
 
     const enterAnimations = enterItems.map(item => {
-      const heroValue = item.node.getAttribute('hero-enter');
+      const heroValue = item.node.getAttribute('morph-enter');
       const animationType = heroValue.split(';')[0];
       const options = parseOptions(heroValue);
 
