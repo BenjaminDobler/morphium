@@ -195,7 +195,7 @@ export class SharedElementTransitionManager {
 
     let duration = 0;
     this.animations.forEach(ani => {
-      duration = Math.max(ani.options.delay + ani.options.duration);
+      duration = Math.max(duration, ani.options.delay + ani.options.duration);
     });
 
     this.duration = duration;
