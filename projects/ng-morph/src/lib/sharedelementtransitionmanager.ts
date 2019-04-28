@@ -6,6 +6,8 @@ import {FadeInAnimation} from './animations/fade-in.animation';
 import {MoveDownAnimation} from './animations/move-down.animation';
 import {MoveUpAnimation} from './animations/move-up.animation';
 import {Injectable} from '@angular/core';
+import {ExpandAnimation} from './animations/expand.animation';
+import {ContractAnimation} from './animations/contract.animation';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +30,8 @@ export class SharedElementTransitionManager {
     this.animationRegistry['fade-in'] = FadeInAnimation;
     this.animationRegistry['move-down'] = MoveDownAnimation;
     this.animationRegistry['move-up'] = MoveUpAnimation;
+    this.animationRegistry['expand'] = ExpandAnimation;
+    this.animationRegistry['contract'] = ContractAnimation;
 
     outlet.activateEvents.subscribe((data: any) => {
       const activatedElement: any = outlet.activated.location.nativeElement; // activated is private!!!

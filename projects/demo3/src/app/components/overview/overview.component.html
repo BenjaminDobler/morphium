@@ -1,0 +1,12 @@
+
+
+<div morph-enter="expand" morph-leave="contract">
+
+<div class="album"  (click)="selectAlbum(album)" *ngFor="let album of data.overview">
+  <img [attr.src]="album.artworkUrl100" [attr.morph-shared]="data.selectedAlbum === album ? 'cover;delay:100;duration:250' : null" />
+  <div class="info">
+    <span>{{album.collectionName}}</span>
+    <span>{{album.artistName}}</span>
+  </div>
+</div>
+</div>

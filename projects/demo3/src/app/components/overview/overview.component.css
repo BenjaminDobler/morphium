@@ -1,0 +1,18 @@
+
+:host {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+
+.album {
+  display: flex;
+}
+
+.info {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+}

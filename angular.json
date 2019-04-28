@@ -421,6 +421,134 @@
           }
         }
       }
+    },
+    "demo3": {
+      "root": "projects/demo3/",
+      "sourceRoot": "projects/demo3/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/demo3",
+            "index": "projects/demo3/src/index.html",
+            "main": "projects/demo3/src/main.ts",
+            "polyfills": "projects/demo3/src/polyfills.ts",
+            "tsConfig": "projects/demo3/tsconfig.app.json",
+            "assets": [
+              "projects/demo3/src/favicon.ico",
+              "projects/demo3/src/assets"
+            ],
+            "styles": [
+              "projects/demo3/src/styles.css"
+            ],
+            "scripts": [],
+            "es5BrowserSupport": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/demo3/src/environments/environment.ts",
+                  "with": "projects/demo3/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "demo3:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "demo3:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "demo3:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/demo3/src/test.ts",
+            "polyfills": "projects/demo3/src/polyfills.ts",
+            "tsConfig": "projects/demo3/tsconfig.spec.json",
+            "karmaConfig": "projects/demo3/karma.conf.js",
+            "styles": [
+              "projects/demo3/src/styles.css"
+            ],
+            "scripts": [],
+            "assets": [
+              "projects/demo3/src/favicon.ico",
+              "projects/demo3/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/demo3/tsconfig.app.json",
+              "projects/demo3/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "demo3-e2e": {
+      "root": "projects/demo3-e2e/",
+      "projectType": "application",
+      "prefix": "",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/demo3-e2e/protractor.conf.js",
+            "devServerTarget": "demo3:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "demo3:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "projects/demo3-e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "demo1",
