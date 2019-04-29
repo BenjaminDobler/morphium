@@ -1,12 +1,13 @@
-import { NgModule } from "@angular/core";
-import { MorphOutlet } from "./morph-outlet.directive";
+import {NgModule} from '@angular/core';
 import {EditorComponent} from './editor/editor.component';
 import {BrowserModule} from '@angular/platform-browser';
+import {MorphiumOutletDirective} from './morph-outlet.directive';
 
 @NgModule({
-  declarations: [ MorphOutlet, EditorComponent],
+  declarations: [MorphiumOutletDirective, EditorComponent],
   imports: [BrowserModule],
-  exports: [MorphOutlet, EditorComponent],
+  exports: [MorphiumOutletDirective, EditorComponent, MorphiumOutletDirective],
   entryComponents: [EditorComponent]
 })
-export class NgMorphModule {}
+export class MorphiumModule {
+}

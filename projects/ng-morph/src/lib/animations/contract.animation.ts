@@ -8,14 +8,14 @@ export class ContractAnimation extends BaseAnimation {
   protected getFromTransformations() {
     return {
       opacity: 1,
-      transform: 'scaleX(1)'
+      transform: 'translateZ(0)'
     };
   }
 
   protected getToTransformation() {
     return {
       opacity: 0,
-      transform: 'scaleX(0.2)'
+      transform: 'translateZ(-150px)'
     };
   }
 }

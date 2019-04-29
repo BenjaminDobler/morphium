@@ -1,6 +1,6 @@
 
 
-<div morph-enter="expand" morph-leave="contract">
+<div style="width: 100%" morph-enter="expand" morph-leave="contract">
 
 <div class="album"  (click)="selectAlbum(album)" *ngFor="let album of data.overview">
   <img [attr.src]="album.artworkUrl100" [attr.morph-shared]="data.selectedAlbum === album ? 'cover;delay:100;duration:250' : null" />

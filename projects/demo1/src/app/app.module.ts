@@ -7,11 +7,11 @@ import { State2Component } from "./components/state2/state2.component";
 import { RouterModule } from "@angular/router";
 import { routes } from "./routes";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { NgMorphModule } from "../../../ng-morph/src/lib/ng-morph.module";
+import { MorphiumModule } from "../../../ng-morph/src/lib/ng-morph.module";
 
 @NgModule({
   declarations: [AppComponent, State1Component, State2Component],
-  imports: [BrowserModule, RouterModule.forRoot(routes), BrowserAnimationsModule, NgMorphModule],
+  imports: [BrowserModule, RouterModule.forRoot(routes), BrowserAnimationsModule, MorphiumModule],
   providers: [],
   bootstrap: [AppComponent]
 })

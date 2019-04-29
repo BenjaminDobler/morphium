@@ -5,20 +5,17 @@ import {getBox, applyBox, resetPosition} from './util';
 export class SharedElementTransition {
   fromClone: any;
   toClone: any;
-  morphContainer: any;
 
   public animations: any[] = [];
   public options: any;
   fromAnimation: any;
   toAnimation: any;
 
-  constructor(from: any, to: any) {
+  constructor(from: any, to: any, private container: HTMLElement) {
     this.prepare(from, to);
   }
 
   async prepare(fromHero, toHero) {
-
-    this.morphContainer = document.querySelector('#morph-holder');
 
     const from = fromHero.node;
     const to = toHero.node;
@@ -115,11 +112,11 @@ export class SharedElementTransition {
 
     animation.onfinish = () => {
       to.style.visibility = 'visible';
-      this.morphContainer.removeChild(fromContainer);
-      this.morphContainer.removeChild(toContainer);
+      this.container.removeChild(fromContainer);
+      this.container.removeChild(toContainer);
     };
-    this.morphContainer.appendChild(fromContainer);
-    this.morphContainer.appendChild(toContainer);
+    this.container.appendChild(fromContainer);
+    this.container.appendChild(toContainer);
 
     this.fromAnimation = animation;
     this.toAnimation = animationTo;

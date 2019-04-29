@@ -25,6 +25,7 @@ import {ChildrenOutletContexts, RouterOutlet} from '@angular/router';
 import {ActivatedRoute} from '@angular/router';
 import {SharedElementTransitionManager} from './sharedelementtransitionmanager';
 import {EditorComponent} from './editor/editor.component';
+import {applyBox, getBox, resetPosition} from './util';
 
 /**
  * @whatItDoes Acts as a placeholder that Angular dynamically fills based on the current router
@@ -50,13 +51,15 @@ import {EditorComponent} from './editor/editor.component';
  *
  * @stable
  */
-@Directive({selector: 'morph-outlet', exportAs: 'outlet'})
-export class MorphOutlet implements OnDestroy, OnInit {
+@Directive({selector: 'morphium-outlet', exportAs: 'outlet'})
+export class MorphiumOutletDirective implements OnDestroy, OnInit {
   private activated: ComponentRef<any> | null = null;
   private _activatedRoute: ActivatedRoute | null = null;
   private name: string;
   public editorOpen = false;
-  private editorRef:ComponentRef<EditorComponent>;
+  private oldComponent;
+
+  private editorRef: ComponentRef<EditorComponent>;
 
   public sharedTransitionManager: SharedElementTransitionManager;
 
@@ -80,7 +83,6 @@ export class MorphOutlet implements OnDestroy, OnInit {
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    console.log(event);
     if (event.key === 'a') {
       this.toggleEditor();
     }
@@ -197,9 +199,14 @@ export class MorphOutlet implements OnDestroy, OnInit {
     this.location.insert(ref.hostView);
   }
 
+
   deactivate(): void {
     if (this.activated) {
+
       const c = this.component;
+      this.oldComponent = this.activated.location.nativeElement.cloneNode(true);
+      this.sharedTransitionManager.container.appendChild(this.oldComponent);
+
       this.activated.destroy();
       this.activated = null;
       this._activatedRoute = null;
@@ -207,7 +214,6 @@ export class MorphOutlet implements OnDestroy, OnInit {
     }
   }
 
-  currentComponent: any;
 
   activateWith(activatedRoute: any, resolver: ComponentFactoryResolver | null) {
     if (this.isActivated) {
@@ -225,9 +231,14 @@ export class MorphOutlet implements OnDestroy, OnInit {
     // Calling `markForCheck` to make sure we will run the change detection when the
     // `RouterOutlet` is inside a `ChangeDetectionStrategy.OnPush` component.
     this.changeDetector.markForCheck();
-    this.activateEvents2.emit({new: this.activated, old: this.currentComponent});
+
+
+    if (this.oldComponent) {
+      this.sharedTransitionManager.prepareTransition(this.activated.location.nativeElement, this.oldComponent);
+      this.oldComponent.remove();
+    }
+
     this.activateEvents.emit(this.activated.instance);
-    this.currentComponent = this.activated;
   }
 }
 

@@ -7,7 +7,7 @@ import {DataService} from './data.service';
 import { OverviewComponent } from './components/overview/overview.component';
 import {Route, RouterModule} from '@angular/router';
 import { DetailComponent } from './components/detail/detail.component';
-import {NgMorphModule} from '../../../ng-morph/src/lib/ng-morph.module';
+import {MorphiumModule} from '../../../ng-morph/src/lib/ng-morph.module';
 
 
 
@@ -33,7 +33,7 @@ const routes: Route[] = [
     HttpClientModule,
     HttpClientJsonpModule,
     RouterModule.forRoot(routes),
-    NgMorphModule
+    MorphiumModule
   ],
   providers: [DataService],
   bootstrap: [AppComponent]

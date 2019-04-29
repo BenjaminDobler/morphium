@@ -7,12 +7,12 @@ export class BaseAnimation {
   fromClone: any;
   fromAnimation: any;
 
-  constructor(from: any, options) {
+  constructor(from: any, options, private container: HTMLElement) {
     options.duration = parseInt(options.duration, 10) || 350;
     options.delay = parseInt(options.delay, 10) || 0;
     this.options = options;
 
-    const container = document.querySelector('#morph-holder');
+
     from.style.visibility = 'hidden';
     this.fromClone = from.cloneNode(true);
     const fromRect: any = getBox(from, {getMargins: false});
@@ -32,7 +32,7 @@ export class BaseAnimation {
       container.removeChild(this.fromClone);
       from.style.visibility = 'visible';
     };
-    container.appendChild(this.fromClone);
+    this.container.appendChild(this.fromClone);
     this.fromAnimation = animation;
     this.animations.push(animation);
   }

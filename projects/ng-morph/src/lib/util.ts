@@ -1,4 +1,4 @@
-export const getBox = (elm, { getMargins = false } = {}) => {
+export const getBox = (elm, {getMargins = false} = {}) => {
   const box = elm.getBoundingClientRect();
   const styles = getComputedStyle(elm);
 
@@ -11,18 +11,18 @@ export const getBox = (elm, { getMargins = false } = {}) => {
 };
 
 export const applyBox = (box: any, el) => {
-  el.style.position = "absolute";
-  el.style.top = box.top + "px";
-  el.style.left = box.left + "px";
-  el.style.width = box.width + "px";
-  el.style.height = box.height + "px";
+  el.style.position = 'absolute';
+  el.style.top = box.top + 'px';
+  el.style.left = box.left + 'px';
+  el.style.width = box.width + 'px';
+  el.style.height = box.height + 'px';
 };
 
 export const parseOptions = options => {
   let optionsObj: any = {};
   if (options) {
-    const optionsA = options.split(";").forEach(o => {
-      const valuePair = o.split(":");
+    const optionsA = options.split(';').forEach(o => {
+      const valuePair = o.split(':');
       optionsObj[valuePair[0]] = valuePair[1];
     });
   }

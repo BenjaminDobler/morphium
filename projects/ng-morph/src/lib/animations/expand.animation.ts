@@ -8,14 +8,14 @@ export class ExpandAnimation extends BaseAnimation {
   protected getFromTransformations() {
     return {
       opacity: 0,
-      transform: 'scaleX(0.2)'
+      transform: 'translateZ(-150px)'
     };
   }
 
   protected getToTransformation() {
     return {
       opacity: 1,
-      transform: 'scaleX(1)'
+      transform: 'translateZ(0)'
     };
   }
 }

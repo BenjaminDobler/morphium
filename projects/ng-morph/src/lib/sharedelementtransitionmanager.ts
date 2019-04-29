@@ -20,6 +20,7 @@ export class SharedElementTransitionManager {
   public duration = 0;
 
   public timelineMode = false;
+  public container: HTMLElement;
 
   animationRegistry: any = {};
 
@@ -33,6 +34,7 @@ export class SharedElementTransitionManager {
     this.animationRegistry['expand'] = ExpandAnimation;
     this.animationRegistry['contract'] = ContractAnimation;
 
+    /*
     outlet.activateEvents.subscribe((data: any) => {
       const activatedElement: any = outlet.activated.location.nativeElement; // activated is private!!!
       if (this.newComponent !== activatedElement) {
@@ -45,6 +47,26 @@ export class SharedElementTransitionManager {
         }
       }
     });
+    */
+
+    this.createContainer();
+  }
+
+
+  createContainer() {
+    const container = document.createElement('div');
+
+    container.style['contain'] = 'strict';
+    container.style.perspective = '400px';
+    container.style.position = 'absolute';
+    container.style.top = '0';
+    container.style.left = '0';
+    container.style.right = '0';
+    container.style.bottom = '0';
+    container.style.pointerEvents = 'none';
+
+    document.querySelector('body').append(container);
+    this.container = container;
   }
 
   public animationStarted() {
@@ -62,7 +84,7 @@ export class SharedElementTransitionManager {
     applyBox(box, oldViewClone);
 
     newView.style.visibility = 'hidden';
-    document.querySelector('#morph-holder').appendChild(oldViewClone);
+    this.container.appendChild(oldViewClone);
     await wait(10);
     oldView = oldViewClone;
     newView.style.visibility = 'visible';
@@ -122,7 +144,7 @@ export class SharedElementTransitionManager {
     });
 
     this.transitions = transformGroups.map(group => {
-      return new SharedElementTransition(group.from, group.to);
+      return new SharedElementTransition(group.from, group.to, this.container);
     });
 
     const queryLeave = (target: any) => toArray(target.querySelectorAll('*[morph-leave]'));
@@ -144,7 +166,7 @@ export class SharedElementTransitionManager {
           options.delay = 50 * staggerGroups[options.stagger];
         }
       }
-      return new this.animationRegistry[animationType](item.node, options);
+      return new this.animationRegistry[animationType](item.node, options, this.container);
     });
 
     const queryEnter = (target: any) => toArray(target.querySelectorAll('*[morph-enter]'));
@@ -166,7 +188,7 @@ export class SharedElementTransitionManager {
           options.delay = 50 * staggerGroups[options.stagger];
         }
       }
-      return new this.animationRegistry[animationType](item.node, options);
+      return new this.animationRegistry[animationType](item.node, options, this.container);
     });
 
     oldView.remove();
