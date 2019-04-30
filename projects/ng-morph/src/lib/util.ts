@@ -19,7 +19,7 @@ export const applyBox = (box: any, el) => {
 };
 
 export const parseOptions = options => {
-  let optionsObj: any = {};
+  const optionsObj: any = {};
   if (options) {
     const optionsA = options.split(';').forEach(o => {
       const valuePair = o.split(':');
@@ -41,4 +41,55 @@ export async function wait(t) {
       resolve();
     }, t);
   });
+}
+
+
+
+export function getMatrix(el) {
+  const st = window.getComputedStyle(el, null);
+
+  const tr = st.getPropertyValue('-webkit-transform') ||
+    st.getPropertyValue('-moz-transform') ||
+    st.getPropertyValue('-ms-transform') ||
+    st.getPropertyValue('-o-transform') ||
+    st.getPropertyValue('transform') ||
+    'FAIL';
+  return tr;
+}
+
+export function getRotation(el) {
+  const st = window.getComputedStyle(el, null);
+  const tr = st.getPropertyValue('-webkit-transform') ||
+    st.getPropertyValue('-moz-transform') ||
+    st.getPropertyValue('-ms-transform') ||
+    st.getPropertyValue('-o-transform') ||
+    st.getPropertyValue('transform') ||
+    'FAIL';
+
+  if (tr === 'FAIL' || tr === 'none') {
+    return 0;
+  }
+
+// With rotate(30deg)...
+// matrix(0.866025, 0.5, -0.5, 0.866025, 0px, 0px)
+  console.log('Matrix: ' + tr);
+
+// rotation matrix - http://en.wikipedia.org/wiki/Rotation_matrix
+
+  const values = tr.split('(')[1].split(')')[0].split(',');
+  const a:any = values[0];
+  const b:any = values[1];
+  const c:any = values[2];
+  const d:any = values[3];
+
+  const scale: any = Math.sqrt(a * a + b * b);
+
+  // console.log('Scale: ' + scale);
+
+// arc sin, convert from radians to degrees, round
+  const sin = b / scale;
+// next line works for 30deg but not 130deg (returns 50);
+// var angle = Math.round(Math.asin(sin) * (180/Math.PI));
+  const angle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
+  return angle;
 }

@@ -1,7 +1,6 @@
 import {getBox, applyBox, resetPosition} from './util';
 
 
-
 export class SharedElementTransition {
   fromClone: any;
   toClone: any;
@@ -71,6 +70,7 @@ export class SharedElementTransition {
     to.style.visibility = 'hidden';
 
     const transform: string = 'translate3d(' + (toRect.left - fromRect.left) + 'px, ' + (toRect.top - fromRect.top) + 'px, 0)';
+
     const animation = fromContainer.animate(
       [
         {

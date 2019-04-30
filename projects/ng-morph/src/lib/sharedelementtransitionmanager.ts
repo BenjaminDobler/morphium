@@ -8,6 +8,8 @@ import {MoveUpAnimation} from './animations/move-up.animation';
 import {Injectable} from '@angular/core';
 import {ExpandAnimation} from './animations/expand.animation';
 import {ContractAnimation} from './animations/contract.animation';
+import {LeaveDown} from './animations/leave-down';
+import {EnterUp} from './animations/enter-up';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +35,8 @@ export class SharedElementTransitionManager {
     this.animationRegistry['move-up'] = MoveUpAnimation;
     this.animationRegistry['expand'] = ExpandAnimation;
     this.animationRegistry['contract'] = ContractAnimation;
+    this.animationRegistry['leave-down'] = LeaveDown;
+    this.animationRegistry['enter-up'] = EnterUp;
 
     /*
     outlet.activateEvents.subscribe((data: any) => {

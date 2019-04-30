@@ -3,3 +3,6 @@
 <div #list class="card-list" morph-enter="fade-in;delay:300" morph-leave="fade-out">
   <div class="card" [attr.morph-shared]="dataService.selectedCard === item ? 'card;delay:100;duration:250' : null" (click)="selectCard(item, $event.currentTarget)" *ngFor="let item of dataService.data">Title: {{ item.title }}</div>
 </div>
+
+
+

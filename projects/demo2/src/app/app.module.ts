@@ -7,6 +7,7 @@ import {OverviewComponentComponent} from './components/overview-component/overvi
 import {DetailComponentComponent} from './components/detail-component/detail-component.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MorphiumModule} from '../../../ng-morph/src/lib/ng-morph.module';
+import {MatButtonModule, MatIconModule} from '@angular/material';
 
 export const routes: Array<any> = [
   {path: 'overview',
@@ -20,7 +21,7 @@ export const routes: Array<any> = [
 
 @NgModule({
   declarations: [AppComponent, DetailComponentComponent, OverviewComponentComponent],
-  imports: [BrowserModule, RouterModule.forRoot(routes), BrowserAnimationsModule, MorphiumModule],
+  imports: [BrowserModule, RouterModule.forRoot(routes), BrowserAnimationsModule, MorphiumModule, MatButtonModule, MatIconModule],
   providers: [],
   bootstrap: [AppComponent]
 })
